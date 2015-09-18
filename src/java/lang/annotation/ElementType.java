@@ -37,12 +37,13 @@ package java.lang.annotation;
  * @since 1.5
  */
 public enum ElementType {
+	//类,接口或者枚举
     /** Class, interface (including annotation type), or enum declaration */
     TYPE,
-
+    //域：包括enum
     /** Field declaration (includes enum constants) */
     FIELD,
-
+    //方法
     /** Method declaration */
     METHOD,
 
@@ -61,3 +62,4 @@ public enum ElementType {
     /** Package declaration */
     PACKAGE
 }
+

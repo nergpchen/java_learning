@@ -25,7 +25,12 @@
 
 package java.lang.annotation;
 
-/**
+/**这个注解也称为meta-annotation
+ * 表示注解类型的生命周期，默认是RetentionPolicy.Class的值。
+ * 生命周期在枚举类RetentionPolicy定义了3个：
+ * SOURCE:
+ * CLASS:
+ * RUNTIME:
  * Indicates how long annotations with the annotated type are to
  * be retained.  If no Retention annotation is present on
  * an annotation type declaration, the retention policy defaults to

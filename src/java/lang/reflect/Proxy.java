@@ -40,7 +40,13 @@ import sun.reflect.Reflection;
 import sun.reflect.misc.ReflectUtil;
 import sun.security.util.SecurityConstants;
 
-/**
+/**代理类主要是用来提供静态方法用来在运行期间建立代理类和实例.
+ * 比如使用, Proxy.newProxyInstance()方法就可以创建一个代理实例。
+ * 这个代理实例在运行期间实现了了指定类的所有接口,下面是代理类的特征
+ * 1:代理类是基于接口的,指定的类必须是一个接口
+ * 2：代理是proxy的一个子类
+ * 3:代理类是和invocation handler相关联的。
+ * 
  * {@code Proxy} provides static methods for creating dynamic proxy
  * classes and instances, and it is also the superclass of all
  * dynamic proxy classes created by those methods.
@@ -225,18 +231,19 @@ import sun.security.util.SecurityConstants;
 public class Proxy implements java.io.Serializable {
 
     private static final long serialVersionUID = -2222568056686623797L;
-
+    
+    /*** constructorparams参数是一个 一个 Class数组，但是这个数组只有一个InvocationHandler.class,*/
     /** parameter types of a proxy class constructor */
     private static final Class<?>[] constructorParams =
         { InvocationHandler.class };
 
-    /**
+    /**WeakCache:用来存储代理类的缓存:WeakCache<ClassLoader,Class<?>,Class<?>>
      * a cache of proxy classes
      */
     private static final WeakCache<ClassLoader, Class<?>[], Class<?>>
         proxyClassCache = new WeakCache<>(new KeyFactory(), new ProxyClassFactory());
 
-    /**
+    /**InvocationHandler：调用处理类
      * the invocation handler for this proxy instance.
      * @serial
      */

@@ -26,6 +26,18 @@
 package java.lang.annotation;
 
 /**
+ * https://en.wikipedia.org/wiki/Java_annotation
+ * http://docs.oracle.com/javase/1.5.0/docs/guide/language/annotations.html
+ * Annotaiont1.5引入的一个新特性，Annotaion是一个所以注解类型的公共接口。
+ * 目的：通过注解，可以把元数据加入到java的代码中，包括类，方法，变量，参数和包。通过注解可以极大的提供代码的可读性和代码的开发速度。
+ * 
+ * 分类：
+ * @Documented标志是否需要再文档中出现
+ * 编译器检查:
+ *   比如@Override,@SuppressWarning.
+ *   代码分析   
+ * 如何使用：
+ * 
  * The common interface extended by all annotation types.  Note that an
  * interface that manually extends this one does <i>not</i> define
  * an annotation type.  Also note that this interface does not itself

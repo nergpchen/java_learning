@@ -25,7 +25,11 @@
 
 package java.lang.annotation;
 
-/**
+/**Target是一个meta-annotaion
+ * 表示注解应用在哪种程序元素：是Class,Field,Method,PARAMETER,PACKAGE,
+ * 在ElementType定义了TYPE,FIELD,METHOD,PARAMETER,CONSTRUCTOR,LOCAL_VARIABLE,ANNOTATION_TYPE,PACKAGE
+ * 默认值是应用于人任何元素。
+ * 
  * Indicates the kinds of program element to which an annotation type
  * is applicable.  If a Target meta-annotation is not present on an
  * annotation type declaration, the declared type may be used on any

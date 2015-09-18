@@ -185,7 +185,7 @@ public final
      * @exception ClassNotFoundException if the class cannot be located
      */
     @CallerSensitive
-    public static Class<?> forName(String className)
+    public static Class forName(String className)
                 throws ClassNotFoundException {
         Class<?> caller = Reflection.getCallerClass();
         return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
@@ -280,7 +280,7 @@ public final
                                             Class<?> caller)
         throws ClassNotFoundException;
 
-    /**
+    /**通过new一个空参数的构造函数实例化一个class对象,所以如果没有构造函数的话，则会抛出异常
      * Creates a new instance of the class represented by this {@code Class}
      * object.  The class is instantiated as if by a {@code new}
      * expression with an empty argument list.  The class is initialized if it
@@ -328,9 +328,10 @@ public final
      *
      */
     @CallerSensitive
-    public T newInstance()
+    public java.lang.Object newInstance()
         throws InstantiationException, IllegalAccessException
     {
+    	//检测成员
         if (System.getSecurityManager() != null) {
             checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false);
         }
@@ -338,6 +339,7 @@ public final
         // NOTE: the following code may not be strictly correct under
         // the current Java memory model.
 
+        //查找构造函数
         // Constructor lookup
         if (cachedConstructor == null) {
             if (this == Class.class) {
@@ -383,7 +385,9 @@ public final
             return null;
         }
     }
+    //Constructor器缓存
     private volatile transient Constructor<T> cachedConstructor;
+    //调用者的对象
     private volatile transient Class<?>       newInstanceCallerCache;
 
 
