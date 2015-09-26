@@ -42,7 +42,10 @@ import sun.reflect.Reflection;
 import sun.security.util.SecurityConstants;
 
 
-/**
+/**线程就是一个正在运行的程序。
+ * 线程的内部结构，也就是属性：
+ * Priority:优先级：
+ * 
  * A <i>thread</i> is a thread of execution in a program. The Java
  * Virtual Machine allows an application to have multiple threads of
  * execution running concurrently.
@@ -144,30 +147,40 @@ class Thread implements Runnable {
     static {
         registerNatives();
     }
-
+    //名字
     private char        name[];
+    //优先级
     private int         priority;
+   //线程
     private Thread      threadQ;
+    
     private long        eetop;
-
+    
+    
     /* Whether or not to single_step this thread. */
     private boolean     single_step;
 
+    //是否是daemon线程
     /* Whether or not the thread is a daemon thread. */
     private boolean     daemon = false;
 
+    //JVM状态
     /* JVM state */
     private boolean     stillborn = false;
 
+    //目标
     /* What will be run. */
     private Runnable target;
 
+    //线程组
     /* The group of this thread */
     private ThreadGroup group;
-
+    
+    //线程的加载器
     /* The context ClassLoader for this thread */
     private ClassLoader contextClassLoader;
 
+    //用于控制系统访问资源的权限
     /* The inherited AccessControlContext of this thread */
     private AccessControlContext inheritedAccessControlContext;
 
@@ -177,7 +190,8 @@ class Thread implements Runnable {
         return threadInitNumber++;
     }
      
-    /* ThreadLocal values pertaining to this thread. This map is maintained
+    /* 定义一个ThreadLoca.ThradLoaclMap
+     * ThreadLocal values pertaining to this thread. This map is maintained
      * by the ThreadLocal class. */
     ThreadLocal.ThreadLocalMap threadLocals = null;
 
@@ -187,7 +201,7 @@ class Thread implements Runnable {
      */
     ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
 
-    /*
+    /*stack的大小
      * The requested stack size for this thread, or 0 if the creator did
      * not specify a stack size.  It is up to the VM to do whatever it
      * likes with this number; some VMs will ignore it.
@@ -199,18 +213,18 @@ class Thread implements Runnable {
      */
     private long nativeParkEventPointer;
 
-    /*
+    /*线程ID
      * Thread ID
      */
     private long tid;
-
+    //
     /* For generating thread ID */
     private static long threadSeqNumber;
 
     /* Java thread status for tools,
      * initialized to indicate thread 'not yet started'
      */
-
+     //线程状态
     private volatile int threadStatus = 0;
 
 
@@ -241,7 +255,7 @@ class Thread implements Runnable {
         }
     }
 
-    /**
+    /**定义常量
      * The minimum priority that a thread can have.
      */
     public final static int MIN_PRIORITY = 1;
@@ -256,7 +270,7 @@ class Thread implements Runnable {
      */
     public final static int MAX_PRIORITY = 10;
 
-    /**
+    /**返回一个当前线程，natvie表示是调用本地操作系统的方法。
      * Returns a reference to the currently executing thread object.
      *
      * @return  the currently executing thread.
@@ -694,7 +708,7 @@ class Thread implements Runnable {
      * @see        #stop()
      */
     public synchronized void start() {
-        /**
+        /**判断状态，如果threadStatus=0则表示是新的.
          * This method is not invoked for the main method thread or "system"
          * group threads created/set up by the VM. Any new functionality added
          * to this method in the future may have to also be added to the VM.
@@ -703,18 +717,20 @@ class Thread implements Runnable {
          */
         if (threadStatus != 0)
             throw new IllegalThreadStateException();
-
+        //添加线程组
         /* Notify the group that this thread is about to be started
          * so that it can be added to the group's list of threads
          * and the group's unstarted count can be decremented. */
         group.add(this);
-
+        //started = false
         boolean started = false;
         try {
+        	//调用start0()
             start0();
             started = true;
         } finally {
             try {
+            	//如果失败，则线程组添加失败线程状态
                 if (!started) {
                     group.threadStartFailed(this);
                 }

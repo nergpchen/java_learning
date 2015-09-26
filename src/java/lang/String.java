@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-/**
+/**字符类学习：
  * The <code>String</code> class represents character strings. All
  * string literals in Java programs, such as <code>"abc"</code>, are
  * implemented as instances of this class.
@@ -1429,7 +1429,8 @@ public final class String
         return startsWith(suffix, value.length - suffix.value.length);
     }
 
-    /**
+    /**为什么要用31*h呢？在这篇文章http://blog.csdn.net/steveguoshao/article/details/12576849提到了
+     * hashCode的目的是为了尽量的避免hashCode的重复。
      * Returns a hash code for this string. The hash code for a
      * <code>String</code> object is computed as
      * <blockquote><pre>

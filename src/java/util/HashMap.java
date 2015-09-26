@@ -26,7 +26,18 @@
 package java.util;
 import java.io.*;
 
-/**
+/**HahsMap是什么:
+ * HashMap实现了Map的所有接口，提供了 Map的所有可选的Map操作,并且允许key是空的,value是空的。
+ * HashMap特点：
+ * 1:
+ * HashMap几乎和Hashtable是一样的，除了HashMap是非线程安全的和允许空值的。
+ * HashMap类是不保证排序的.实际上,Hashmap不会保证排序是不变的。
+ * 假设hash函数正确了分散了各个元素，那么get和put操作的时间消耗的性能是一样的。
+ * 2:影响性能:
+ * 有两个参数影响到性能：initial capacity和load factor.
+ * initial capacity:初始容量;
+ * load factor :加载因子,通常情况下的加载因子是0.75
+ * 
  * Hash table based implementation of the <tt>Map</tt> interface.  This
  * implementation provides all of the optional map operations, and permits
  * <tt>null</tt> values and the <tt>null</tt> key.  (The <tt>HashMap</tt>
@@ -35,6 +46,7 @@ import java.io.*;
  * the order of the map; in particular, it does not guarantee that the order
  * will remain constant over time.
  *
+ *Hash函数:
  * <p>This implementation provides constant-time performance for the basic
  * operations (<tt>get</tt> and <tt>put</tt>), assuming the hash function
  * disperses the elements properly among the buckets.  Iteration over
@@ -43,7 +55,7 @@ import java.io.*;
  * of key-value mappings).  Thus, it's very important not to set the initial
  * capacity too high (or the load factor too low) if iteration performance is
  * important.
- *
+ *影响性能操作：
  * <p>An instance of <tt>HashMap</tt> has two parameters that affect its
  * performance: <i>initial capacity</i> and <i>load factor</i>.  The
  * <i>capacity</i> is the number of buckets in the hash table, and the initial
@@ -131,7 +143,7 @@ public class HashMap<K,V>
 {
 
     /**
-     * The default initial capacity - MUST be a power of two.
+     * The default initial capacity - MUST be a power of two=2的N次方.
      */
     static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
 
@@ -235,14 +247,15 @@ public class HashMap<K,V>
         }
     }
 
-    /**
+    /**一个随机的和当前实例相关联的,应用于hascode的值的运算,用来让hash碰撞处理器来查找值. 如果0的话，则不需要修改hash.
      * A randomizing value associated with this instance that is applied to
      * hash code of keys to make hash collisions harder to find. If 0 then
      * alternative hashing is disabled.
      */
     transient int hashSeed = 0;
 
-    /**
+    /**默认的initalCapcity = 16;loadFactor = 0.75
+     * 初始化 loadFactor和threshold
      * Constructs an empty <tt>HashMap</tt> with the specified initial
      * capacity and load factor.
      *
@@ -309,7 +322,7 @@ public class HashMap<K,V>
                 : (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 1;
     }
 
-    /**
+    /**initHashSeedAsNeeded(capacity)生成一个HashSeed:
      * Inflates the table.
      */
     private void inflateTable(int toSize) {
@@ -351,6 +364,8 @@ public class HashMap<K,V>
     }
 
     /**生成一个hash值:
+     * 如果是字符串,调用sun.misc.Hashing.stringHash32((String) k)生成一个字符Hash值：Hash值是个int值
+     *   h ^= k.hashCode();
      * sun.misc.Hashing.stringHash32((String) k)
      * Retrieve object hash code and applies a supplemental hash function to the
      * result hash, which defends against poor quality hash functions.  This is
@@ -363,9 +378,10 @@ public class HashMap<K,V>
         if (0 != h && k instanceof String) {
             return sun.misc.Hashing.stringHash32((String) k);
         }
-
+        //为什么要用 ^=呢?
         h ^= k.hashCode();
-
+        
+        //下面确保唯一性
         // This function ensures that hashCodes that differ only by
         // constant multiples at each bit position have a bounded
         // number of collisions (approximately 8 at default load factor).
@@ -493,6 +509,7 @@ public class HashMap<K,V>
     }
 
     2:调用hash()方法生成一个hash值 
+    Hash算法():
     3: 调用 indexFor(hash, table.length)取得索引
     4: 遍历键key是否已经存在,如果存在，则更改为新的值.
     5: 调用addEntry()方法存入键值对
@@ -508,24 +525,28 @@ public class HashMap<K,V>
      *         previously associated <tt>null</tt> with <tt>key</tt>.)
      */
     public V put(K key, V value) {
-        if (table == EMPTY_TABLE) {
+        
+    	if (table == EMPTY_TABLE) {
             inflateTable(threshold);
         }
         if (key == null)
             return putForNullKey(value);
         int hash = hash(key);
+        //获得索引
         int i = indexFor(hash, table.length);
+        
         for (Entry<K,V> e = table[i]; e != null; e = e.next) {
             Object k;
             if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
                 V oldValue = e.value;
                 e.value = value;
-                e.recordAccess(this);
+                e.recordAccess(this);//这个做什么用？
                 return oldValue;
             }
         }
 
         modCount++;
+        //添加
         addEntry(hash, key, value, i);
         return null;
     }

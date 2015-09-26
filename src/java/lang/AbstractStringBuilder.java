@@ -1357,7 +1357,8 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
      * @return  a reference to this object.
      */
     public AbstractStringBuilder reverse() {
-        boolean hasSurrogate = false;
+        
+    	boolean hasSurrogate = false;
         int n = count - 1;
         for (int j = (n-1) >> 1; j >= 0; --j) {
             char temp = value[j];

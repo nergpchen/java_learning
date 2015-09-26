@@ -160,6 +160,10 @@ public class Executors {
     }
 
     /**
+     * 建立线程池，并且可以重用以前的线程池。
+     * 如果是执行短期任务的化，线程池可以提高性能。
+     * 如果线程不存在的话，一个新的线程将会加入到池中。如果一个线程60秒后没有使用会被中断，并且被移从cache移出.
+     * 
      * Creates a thread pool that creates new threads as needed, but
      * will reuse previously constructed threads when they are
      * available.  These pools will typically improve the performance

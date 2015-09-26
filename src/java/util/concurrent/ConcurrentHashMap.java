@@ -42,7 +42,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 
-/**Hash Table 支持线程安全,这个类也是，
+/**Hash Table 支持线程安全,这个类也是。
+ * 
  * A hash table supporting full concurrency of retrievals and
  * adjustable expected concurrency for updates. This class obeys the
  * same functional specification as {@link java.util.Hashtable}, and
@@ -256,8 +257,10 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
     transient Collection<V> values;
 
     /**
+     * 
      * ConcurrentHashMap list entry. Note that this is never exported
      * out as a user-visible Map.Entry.
+     * 
      */
     static final class HashEntry<K,V> {
         final int hash;
@@ -427,10 +430,16 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
             this.threshold = threshold;
             this.table = tab;
         }
-
+        
+        /**
+         * 1: HashEntry<K,V> node = tryLock() ? null :scanAndLockForPut(key, hash, value);
+         *   如果锁的话，则就返回空，如果没有锁的话，则调用scanAndLockForPut
+         */
         final V put(K key, int hash, V value, boolean onlyIfAbsent) {
-            HashEntry<K,V> node = tryLock() ? null :
+            
+        	HashEntry<K,V> node = tryLock() ? null :
                 scanAndLockForPut(key, hash, value);
+            
             V oldValue;
             try {
                 HashEntry<K,V>[] tab = table;
@@ -781,7 +790,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
 
     /* ---------------- Public operations -------------- */
 
-    /**
+    /**构造函数:
      * Creates a new, empty map with the specified initial
      * capacity, load factor and concurrency level.
      *
@@ -807,14 +816,22 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         // Find power-of-two sizes best matching arguments
         int sshift = 0;
         int ssize = 1;
+        
         while (ssize < concurrencyLevel) {
-            ++sshift;
+            //移动位置次数
+        	++sshift;
+            //左移
             ssize <<= 1;
+
         }
+        //当前位置
         this.segmentShift = 32 - sshift;
+        
         this.segmentMask = ssize - 1;
+        //处理初始化容量
         if (initialCapacity > MAXIMUM_CAPACITY)
             initialCapacity = MAXIMUM_CAPACITY;
+        //
         int c = initialCapacity / ssize;
         if (c * ssize < initialCapacity)
             ++c;
@@ -1119,14 +1136,18 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
      */
     @SuppressWarnings("unchecked")
     public V put(K key, V value) {
+    	//Segment对象干嘛用的？
         Segment<K,V> s;
         if (value == null)
             throw new NullPointerException();
         int hash = hash(key);
+        //把hash右移然后和sementsMask进行与运算。
         int j = (hash >>> segmentShift) & segmentMask;
+        //s =  (Segment<K,V>)UNSAFE.getObject(segments, (j << SSHIFT) + SBASE)
         if ((s = (Segment<K,V>)UNSAFE.getObject          // nonvolatile; recheck
              (segments, (j << SSHIFT) + SBASE)) == null) //  in ensureSegment
             s = ensureSegment(j);
+        
         return s.put(key, hash, value, false);
     }
 

@@ -34,6 +34,7 @@ import sun.misc.SharedSecrets;
 
 
 /**
+ * http://download.oracle.com/technetwork/java/javase/6/docs/zh/api/java/security/AccessControlContext.html
  * An AccessControlContext is used to make system resource access decisions
  * based on the context it encapsulates.
  *
